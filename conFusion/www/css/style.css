@@ -1,0 +1,8 @@
+.overflow-scroll {
+     overflow-x: hidden;
+     overflow-y: auto;
+}
+
+.tab-item a {
+  color:inherit;
+}
