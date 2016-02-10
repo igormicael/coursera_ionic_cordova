@@ -132,6 +132,12 @@
           "comment": "Good dish!.",
           "author": "Josias Martins Vale",
           "date": "2016-01-01T15:03:19.391Z"
+        },
+        {
+          "rating": "4",
+          "comment": "muito bom!",
+          "author": "igor",
+          "date": "2016-02-08T22:54:58.770Z"
         }
       ]
     },
