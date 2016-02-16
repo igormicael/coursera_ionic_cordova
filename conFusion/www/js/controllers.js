@@ -1,6 +1,6 @@
 angular.module('conFusion.controllers', [])
 
-.controller('AppCtrl', function ($scope, $ionicModal, $timeout, $localStorage) {
+.controller('AppCtrl', function($scope, $ionicModal, $timeout, $localStorage) {
     // With the new view caching in Ionic, Controllers are only called
     // when they are recreated or on app start, instead of every page change.
     // To listen for when this page is active (for example, to refresh data),
@@ -9,7 +9,7 @@ angular.module('conFusion.controllers', [])
     //});
 
     // Form data for the login modal
-    $scope.loginData = $localStorage.getObject('userinfo','{}');
+    $scope.loginData = $localStorage.getObject('userinfo', '{}');
 
     // Create the login modal that we will use later
     $ionicModal.fromTemplateUrl('templates/login.html', {
@@ -31,7 +31,7 @@ angular.module('conFusion.controllers', [])
     // Perform the login action when the user submits the login form
     $scope.doLogin = function() {
         console.log('Doing login', $scope.loginData);
-        $localStorage.storeObject('userinfo',$scope.loginData);
+        $localStorage.storeObject('userinfo', $scope.loginData);
 
         // Simulate a login delay. Remove this and replace with your login
         // code if using a login system
@@ -78,7 +78,7 @@ angular.module('conFusion.controllers', [])
     $scope.leader = leader;
     $scope.showDish = false;
     $scope.message = "Loading ...";
-    $scope.dish = dish;    
+    $scope.dish = dish;
     $scope.promotion = promotion;
 
 }])
@@ -90,43 +90,70 @@ angular.module('conFusion.controllers', [])
 
 }])
 
-.controller('MenuController', ['$scope', 'dishes', 'favoriteFactory', 'baseURL', '$ionicListDelegate', function($scope, dishes, favoriteFactory, baseURL, $ionicListDelegate) {
+.controller('MenuController', ['$scope', 'dishes', 'favoriteFactory', 'baseURL', '$ionicListDelegate',
+    '$ionicPlatform', '$cordovaLocalNotification', '$cordovaToast',
+    function($scope, dishes, favoriteFactory, baseURL, $ionicListDelegate, $ionicPlatform, $cordovaLocalNotification, $cordovaToast) {
 
-    $scope.baseURL = baseURL;
-    $scope.tab = 1;
-    $scope.filtText = '';
-    $scope.showDetails = false;
-    $scope.message = "Loading ...";
-    $scope.dishes = dishes;
+        $scope.baseURL = baseURL;
+        $scope.tab = 1;
+        $scope.filtText = '';
+        $scope.showDetails = false;
+        $scope.message = "Loading ...";
+        $scope.dishes = dishes;
 
-    $scope.select = function(setTab) {
-        $scope.tab = setTab;
+        $scope.select = function(setTab) {
+            $scope.tab = setTab;
 
-        if (setTab === 2) {
-            $scope.filtText = "appetizer";
-        } else if (setTab === 3) {
-            $scope.filtText = "mains";
-        } else if (setTab === 4) {
-            $scope.filtText = "dessert";
-        } else {
-            $scope.filtText = "";
-        }
-    };
+            if (setTab === 2) {
+                $scope.filtText = "appetizer";
+            } else if (setTab === 3) {
+                $scope.filtText = "mains";
+            } else if (setTab === 4) {
+                $scope.filtText = "dessert";
+            } else {
+                $scope.filtText = "";
+            }
+        };
 
-    $scope.isSelected = function(checkTab) {
-        return ($scope.tab === checkTab);
-    };
+        $scope.isSelected = function(checkTab) {
+            return ($scope.tab === checkTab);
+        };
 
-    $scope.toggleDetails = function() {
-        $scope.showDetails = !$scope.showDetails;
-    };
+        $scope.toggleDetails = function() {
+            $scope.showDetails = !$scope.showDetails;
+        };
 
-    $scope.addFavorite = function(index) {
-        favoriteFactory.addToFavorites(index);
-        $ionicListDelegate.closeOptionButtons();
-    };
+        $scope.addFavorite = function(index) {
+            favoriteFactory.addToFavorites(index);
+            $ionicListDelegate.closeOptionButtons();
+        
+            $ionicPlatform.ready(function() {
+                $cordovaLocalNotification.schedule({
+                    id: 1,
+                    title: "Added Favorite",
+                    text: $scope.dishes[index].name
+                }).then(function() {
+                    console.log('Added Favorite ' + $scope.dishes[index].name);
+                }, function() {
+                    console.log('Failed to add Notification ');
+                });
 
-}])
+                // i don't like this approach
+                $cordovaToast
+                    .show('Added Favorite ' + $scope.dishes[index].name, 'long', 'center')
+                    .then(function(success) {
+                        // success
+                    }, function(error) {
+                        // error
+                    }
+                );
+            });
+
+        };
+
+
+    }
+])
 
 .controller('ContactController', ['$scope', function($scope) {
 
@@ -177,7 +204,7 @@ angular.module('conFusion.controllers', [])
     };
 }])
 
-.controller('DishDetailController', ['$scope', '$stateParams','dish', 'menuFactory', 'favoriteFactory', '$ionicPopover', '$ionicModal', 'baseURL',
+.controller('DishDetailController', ['$scope', '$stateParams', 'dish', 'menuFactory', 'favoriteFactory', '$ionicPopover', '$ionicModal', 'baseURL',
     function($scope, $stateParams, dish, menuFactory, favoriteFactory, $ionicPopover, $ionicModal, baseURL) {
 
         $scope.baseURL = baseURL;
@@ -185,7 +212,7 @@ angular.module('conFusion.controllers', [])
         $scope.showDish = false;
         $scope.message = "Loading ...";
         $scope.dish = dish;
-        
+
         // pop over
         $scope.popover = $ionicPopover.fromTemplateUrl('templates/dish-detail-popover.html', {
             scope: $scope

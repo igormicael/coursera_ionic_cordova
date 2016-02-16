@@ -1,7 +1,8 @@
 'use strict';
 
 angular.module('confusion.services', ['ngResource'])
-    .constant("baseURL", "http://localhost:3000/")
+    //.constant("baseURL", "http://localhost:3000/")
+    .constant("baseURL", "http://192.168.25.3:3000/")
 
 .factory('menuFactory', ['$resource', 'baseURL', function($resource, baseURL) {
 
@@ -35,7 +36,7 @@ angular.module('confusion.services', ['ngResource'])
 
 .factory('favoriteFactory', ['$resource', 'baseURL', '$localStorage', function($resource, baseURL, $localStorage) {
     var favFac = {};
-    var favorites = $localStorage.getObject('favorites','{}');
+    var favorites = $localStorage.getObject('favorites','[]');
 
     favFac.addToFavorites = function(index) {
         console.log('tipo :' + typeof index);
