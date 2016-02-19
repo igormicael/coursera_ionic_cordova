@@ -1,6 +1,6 @@
 angular.module('conFusion.controllers', [])
 
-.controller('AppCtrl', function($scope, $ionicModal, $timeout, $localStorage, $ionicPlatform, $cordovaCamera) {
+.controller('AppCtrl', function($scope, $ionicModal, $timeout, $localStorage, $ionicPlatform, $cordovaCamera, $cordovaImagePicker) {
     // With the new view caching in Ionic, Controllers are only called
     // when they are recreated or on app start, instead of every page change.
     // To listen for when this page is active (for example, to refresh data),
@@ -125,6 +125,23 @@ angular.module('conFusion.controllers', [])
 
             $scope.registerform.show();
 
+        };
+
+        var getPicturesOptions = {
+            maximumImagesCount: 1,
+            width: 100,
+            height: 0
+        };
+
+        $scope.getPicture = function(getPicturesOptions){
+            $cordovaImagePicker.getPictures()
+                .then(function (results) {
+                  for (var i = 0; i < results.length; i++) {
+                    $scope.registration.imgSrc = results[i];
+                  }
+                }, function(error) {
+                  console.log('error = ' + error);
+                });
         };
     });
 
