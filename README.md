@@ -27,4 +27,4 @@ Projeto relativo ao curso do Coursera: [Mobile App Development] (https://www.cou
   * Notifying the User
   * Using the Cordova Camera Plugin
   * Hybrid Mobile Development and IBM BlueMix (Guest Lecture by Mr. Raymond Camden)
-  * Assignment 4
+  * Assignment 4 
